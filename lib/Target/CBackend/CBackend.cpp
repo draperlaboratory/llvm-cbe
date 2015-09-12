@@ -250,6 +250,8 @@ namespace {
     void printContainedStructs(Type *Ty, SmallPtrSet<Type *, 16> &);
     void printFloatingPointConstants(Function &F);
     void printFloatingPointConstants(const Constant *C);
+    void
+    printFloatingPointConstantDataSequentials(const ConstantDataSequential *CDS);
     void printFunctionSignature(const Function *F, bool Prototype);
     bool okayToPrint(BasicBlock *BB);
     void printFunction(Function &);
@@ -2184,8 +2186,13 @@ void CWriter::printFloatingPointConstants(Function &F) {
   // precision.
   //
   for (constant_iterator I = constant_begin(&F), E = constant_end(&F);
-       I != E; ++I)
-    printFloatingPointConstants(*I);
+       I != E; ++I) {
+    if (const ConstantDataSequential *CDS = dyn_cast<ConstantDataSequential>(*I)) {
+      printFloatingPointConstantDataSequentials(CDS);
+    } else {
+      printFloatingPointConstants(*I);
+    }
+  }
 
   Out << '\n';
 }
@@ -2244,6 +2251,12 @@ void CWriter::printFloatingPointConstants(const Constant *C) {
   }
 }
 
+void CWriter::printFloatingPointConstantDataSequentials(
+    const ConstantDataSequential *CDS) {
+  for (unsigned i = 0, e = CDS->getNumElements(); i != e; ++i) {
+    printFloatingPointConstants(CDS->getElementAsConstant(i));
+  }
+}
 
 /// printSymbolTable - Run through symbol table looking for type names.  If a
 /// type name is found, emit its declaration...

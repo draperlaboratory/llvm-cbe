@@ -1,4 +1,4 @@
-INSTALLATION INSTRUCTIONS
+INSTALLATION INSTRUCTIONS 
 =========================
 
 This version of the LLVM-CBE library works with LLVM r202033. You will have to
@@ -9,7 +9,7 @@ compiled correctly.
 
 The library is known to compile on various linux versions (Redhat,
 Mageia, Ubuntu, Debian).
-
+##Go through the steps below
 Step 1: Installing LLVM
 =======================
 
